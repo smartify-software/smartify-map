@@ -1,37 +1,38 @@
 <template>
   <GoogleMap api-key="AIzaSyBkA4jYjWyzhbedSSeCEnG0iDwb6o5QMtI" style="width: 100%; height: 500px" :center="center"
              :zoom="16">
-
-    <CustomMarker :options="{ position: node, anchorPoint: 'BOTTOM_CENTER' }">
+    <CustomMarker v-for="(node, index) in nodes" :key="index"
+                  :options="{ position: node, anchorPoint: 'BOTTOM_CENTER' }">
       <div class="custom-marker">
         <div class="blue-dot"></div>
         <div class="orange-halo"></div>
       </div>
     </CustomMarker>
-
   </GoogleMap>
 </template>
 
 
 <script>
 import {defineComponent, ref, watchEffect} from "vue";
-import {CustomMarker, GoogleMap,} from "vue3-google-map";
+import {CustomMarker, GoogleMap} from "vue3-google-map";
 
 export default defineComponent({
   components: {GoogleMap, CustomMarker},
   setup() {
     // DC coordinates
     const center = {lat: 38.9072, lng: -77.0369};
-
-    const node = ref({lat: 38.9072, lng: -77.0369})
-
+    const nodes = ref([{lat: 38.9072, lng: -77.0369}]); // Initialize with one node
 
     // Function to randomly move the marker within a small vicinity
     const moveMarker = () => {
-      node.value = {
-        lat: node.value.lat + (Math.random() - 0.5) * 0.001,
-        lng: node.value.lng + (Math.random() - 0.5) * 0.001,
+      const lastNode = nodes.value[nodes.value.length - 1];
+      const newNode = {
+        lat: lastNode.lat + (Math.random() - 0.5) * 0.001,
+        lng: lastNode.lng + (Math.random() - 0.5) * 0.001,
       };
+      nodes.value.push(newNode);
+      console.log(nodes.value.length)
+      console.log({lat: lastNode.lat, lng: lastNode.lng})
     };
 
     // Set an interval to move the marker every 2 seconds
@@ -44,9 +45,10 @@ export default defineComponent({
       });
     });
 
-    return {center, node};
+    return {center, nodes};
   },
 });
+
 </script>
 
 <style scoped>

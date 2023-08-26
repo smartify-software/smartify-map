@@ -1,4 +1,4 @@
-# crowdkeep-lite
+# smartify-map
 
 ## Project setup
 ```
